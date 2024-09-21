@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",  // O script que Heroku executará para iniciar sua aplicação
+    "start": "node server.js",  
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +14,6 @@
     "ws": "^8.18.0"
   },
   "engines": {
-    "node": ">=14.x"  // Definir a versão do Node.js que você deseja usar (opcional)
+    "node": ">=14.x" 
   }
 }
