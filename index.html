@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pai</title>
+    <!-- <meta name="description" content="Survey" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Pai</h1>
+                <div>
+                    <input type="text" id="mensagemInput" placeholder="Escreva sua mensagem">
+                    <button onclick="enviarMensagem()">Enviar para os Filhos</button>
+                </div>
+                
+                <h2>Mensagens Recebidas</h2>
+
+                <!-- Div para cada filho -->
+                <div class="quadros">
+                    <div>
+                        <h3 class="titMsg">Mensagens do Filho 1</h3>
+                        <div id="mensagensFilho1"></div><!-- Mensagens do Filho 1 aparecerão aqui -->
+                    </div>
+
+                    <div>
+                        <h3 class="titMsg">Mensagens do Filho 2</h3>
+                        <div id="mensagensFilho2"></div> <!-- Mensagens do Filho 2 aparecerão aqui -->
+                    </div>
+                </div>
+
+                <div class="quadros">
+                    <div>
+                        <h3 class="titMsg">Mensagens do Filho 3</h3>
+                        <div id="mensagensFilho3"></div> <!-- Mensagens do Filho 3 aparecerão aqui -->
+                    </div>
+
+                    <div>
+                        <h3 class="titMsg">Mensagens do Filho 4</h3>
+                        <div id="mensagensFilho4"></div><!-- Mensagens do Filho 4 aparecerão aqui -->
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onopen = function() {
+            console.log('Conectado ao servidor WebSocket no Pai');
+        };
+        //Receber mensagem dos Filhos
+        socket.onmessage = function(event) {
+            if (event.data instanceof Blob) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    processarMensagem(JSON.parse(reader.result));
+                };
+                reader.readAsText(event.data);
+            } else {
+                processarMensagem(JSON.parse(event.data));
+            }
+        };
+
+
+        function processarMensagem(dadosRecebidos) {
+            if (dadosRecebidos.destinatario === 'pai') {
+                const identificadorFilho = dadosRecebidos.identificador;  // 'filho1', 'filho2', etc.
+                const textoMensagem = dadosRecebidos.texto;
+
+                // Verifica qual filho enviou a mensagem e coloca na div correspondente
+                if (identificadorFilho === 'filho1') {
+                    const divFilho1 = document.getElementById('mensagensFilho1');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho1.appendChild(novaMensagem);
+                } else if (identificadorFilho === 'filho2') {
+                    const divFilho2 = document.getElementById('mensagensFilho2');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho2.appendChild(novaMensagem);
+                } else if (identificadorFilho === 'filho3') {
+                    const divFilho3 = document.getElementById('mensagensFilho3');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho3.appendChild(novaMensagem);
+                } else if (identificadorFilho === 'filho3') {
+                    const divFilho3 = document.getElementById('mensagensFilho3');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho3.appendChild(novaMensagem);
+                } else if (identificadorFilho === 'filho3') {
+                    const divFilho3 = document.getElementById('mensagensFilho3');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho3.appendChild(novaMensagem);
+                } else if (identificadorFilho === 'filho3') {
+                    const divFilho3 = document.getElementById('mensagensFilho3');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho3.appendChild(novaMensagem);
+                } else if (identificadorFilho === 'filho4') {
+                    const divFilho4 = document.getElementById('mensagensFilho4');
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho4.appendChild(novaMensagem);
+                }
+                console.log(`Mensagem recebida do ${identificadorFilho}: ${textoMensagem}`);
+            }
+        }
+
+        // Enviar mensagem com Enter
+        document.getElementById('mensagemInput').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    enviarMensagem();
+                }
+            });
+
+        // Enviar mensagem
+            function enviarMensagem() {
+                const mensagem = document.getElementById('mensagemInput').value;
+                const dadosMensagem = {
+                    identificador: 'pai',
+                    texto: mensagem,
+                    destinatario: 'filhos'
+                };
+                socket.send(JSON.stringify(dadosMensagem));
+                console.log('Mensagem enviada para os filhos:', dadosMensagem.texto);
+
+                // Limpa o campo de mensagem após enviar msg
+                document.getElementById('mensagemInput').value = '';
+            }
+    </script>
+</body>
+</html>

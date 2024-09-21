@@ -1,0 +1,79 @@
+   /* Estilos globais */
+   body {
+    margin: 0; /*Remove margens e preenchimentos padrão do corpo. */
+    padding: 0;  /*Remove margens e preenchimentos padrão do corpo. */
+    font-family: 'Arial', sans-serif;
+    /* line-height: 1.6; Define a altura da linha para 1.6 vezes o tamanho da fonte */
+    /* background-color: #f8f9fa; Cor de fundo neutra */
+    display: flex; /*Usa o modelo flexbox para o layout.*/
+    flex-direction: column; /*Define a direção dos itens como uma coluna.*/
+    min-height: 100vh; /* Define a altura mínima como 100% da altura da viewport (altura visível da janela do navegador).*/
+  }
+
+  .row{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Ajusta a posição do rodapé */
+  footer {
+      margin-top: auto; /*Coloca o rodapé no final da página.*/
+      padding: 10px 0; /* Espaçamento interno do rodapé */
+  }
+
+  /* Margens e espaçamentos */
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  a {
+    color: #007bff; /* Cor padrão para links */
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline; /* Sublinhado ao passar o mouse */
+  }
+
+  /* Ajuste de espaçamento global */
+  .container, .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  /* Estilos personalizados para diferentes breakpoints do Bootstrap */
+  /* Telas grandes (Desktop) */
+  .container.custom-container {
+    max-width: 900px; /* Ajuste conforme necessário */
+    margin: 0 auto; /* Centraliza o contêiner */
+    position: relative;
+    top: 10px;
+    bottom: 10px;
+  }
+
+  /* //PERSONALIZAÇÃO COMUNICA */
+  .quadros{
+    display: flex;
+    justify-content: space-between;
+}
+
+.titMsg{
+    margin-bottom: 5px;
+}
+
+#mensagensFilho1, #mensagensFilho2, #mensagensFilho3, #mensagensFilho4, #ultimaMensagem{
+    border: 1px solid #000; 
+    padding: 10px; 
+    margin-bottom: 20px;
+    min-height: 4em;
+}
+
+/* .recebida{
+  min-height: 4em;
+} */
