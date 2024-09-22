@@ -38,7 +38,6 @@
     const socketUrl = window.location.origin.replace(/^http/, 'ws');
     const socket = new WebSocket(socketUrl);
 
-    // Função para criar o box de um filho (se ainda não existir)
     function criarBoxFilho(numeroFilho) {
       const boxesFilhos = document.getElementById('boxes-filhos');
       const idBox = `box-filho${numeroFilho}`;
@@ -54,21 +53,16 @@
         const h3 = document.createElement('h3');
         h3.textContent = `Filho ${numeroFilho}`;
 
-        const p = document.createElement('p');
-        p.id = `ultimaMensagem-${idBox}`;
+        // Remove a criação do <p> aqui, pois vamos criá-lo dinamicamente
 
         divBox.appendChild(h3);
-        divBox.appendChild(p);
         divCol.appendChild(divBox);
         boxesFilhos.appendChild(divCol);
       }
     }
 
-    // Quando a conexão WebSocket é aberta:
     socket.onopen = function() {
       console.log('Conectado ao servidor WebSocket no Pai');
-
-      // Cria os boxes para os 10 filhos ao conectar
       for (let i = 1; i <= 10; i++) {
         criarBoxFilho(i);
       }
@@ -81,17 +75,20 @@
         const dadosRecebidos = JSON.parse(event.data);
 
         if (dadosRecebidos.destinatario === 'pai') {
-          const numeroFilho = dadosRecebidos.identificador.slice(-1);
+          // Corrige a extração do número do filho:
+          const numeroFilho = dadosRecebidos.identificador.match(/\d+/)?.[0] || ""; 
           const idBox = `box-filho${numeroFilho}`;
-          const idMensagem = `ultimaMensagem-${idBox}`;
 
           // Cria o box do filho se ele ainda não existir
           criarBoxFilho(numeroFilho);
 
           const boxMensagem = document.getElementById(idBox);
-          const ultimaMensagem = document.getElementById(idMensagem);
 
-          ultimaMensagem.textContent = `Filho ${numeroFilho}: ${dadosRecebidos.texto}`;
+          // Cria um novo parágrafo para cada mensagem:
+          const novaMensagem = document.createElement('p');
+          novaMensagem.textContent = `Filho ${numeroFilho}: ${dadosRecebidos.texto}`;
+          boxMensagem.appendChild(novaMensagem);
+
           boxMensagem.scrollTop = boxMensagem.scrollHeight;
         }
       } catch (e) {
@@ -104,12 +101,19 @@
       const dadosMensagem = {
         identificador: 'Pai',
         texto: mensagem,
-        destinatario: 'filhos' 
+        destinatario: 'filhos'
       };
       socket.send(JSON.stringify(dadosMensagem));
       console.log('Mensagem enviada para os Filhos:', dadosMensagem.texto);
-      document.getElementById('mensagemInput').value = ''; 
+      document.getElementById('mensagemInput').value = '';
     }
+
+    // Event Listener para enviar com "Enter":
+    document.getElementById('mensagemInput').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') {
+        enviarMensagem();
+      }
+    });
   </script>
 </body>
 </html>
