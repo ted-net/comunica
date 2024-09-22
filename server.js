@@ -1,8 +1,20 @@
 const WebSocket = require('ws');
+const express = require('express');
+const path = require('path');
 
-// Usar a porta fornecida pelo Heroku ou 8080 localmente
+const app = express();
 const port = process.env.PORT || 8080;
-const wss = new WebSocket.Server({ port });
+
+// Servir arquivos HTML na pasta public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Criar o servidor HTTP
+const server = app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
+
+// WebSocket com integração ao HTTP
+const wss = new WebSocket.Server({ server });
 
 let pai = null;
 
@@ -26,7 +38,6 @@ wss.on('connection', (ws) => {
             console.log('Mensagem recebida de um filho:', data.texto);
 
             if (pai && pai.readyState === WebSocket.OPEN) {
-                // Envia a mensagem para o pai
                 pai.send(JSON.stringify({
                     identificador: data.identificador,
                     texto: data.texto,
@@ -36,7 +47,6 @@ wss.on('connection', (ws) => {
         } else if (ws.isPai) {
             console.log('Mensagem recebida do pai:', data.texto);
 
-            // Envia a mensagem do pai para todos os filhos
             wss.clients.forEach(client => {
                 if (client !== pai && client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify({
