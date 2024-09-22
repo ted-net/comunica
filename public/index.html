@@ -22,6 +22,14 @@
         
         <h2>Mensagens dos Filhos:</h2>
         <div class="row"> 
+        </div>
+
+        <h2>Enviar Mensagem para os Filhos:</h2>
+        <div class="input-group mb-3">
+          <input type="text" id="mensagemInput" class="form-control" placeholder="Digite sua mensagem para os filhos">
+          <button class="btn btn-primary" type="button" onclick="enviarMensagem()">Enviar</button>
+        </div>
+     
           <!-- Boxes para cada filho -->
           <div class="col-md-4">
             <h3>Filho 1</h3>
@@ -122,6 +130,18 @@
         console.error('Erro ao processar mensagem:', e);
       }
     };
+
+    function enviarMensagem() {
+      const mensagem = document.getElementById('mensagemInput').value;
+      const dadosMensagem = {
+        identificador: 'Pai', // Identificador do Pai
+        texto: mensagem,
+        destinatario: 'filhos' // Destinado a todos os filhos
+      };
+      socket.send(JSON.stringify(dadosMensagem));
+      console.log('Mensagem enviada para os Filhos:', dadosMensagem.texto);
+      document.getElementById('mensagemInput').value = ''; // Limpa o campo de mensagem
+    }
 
   </script>
 </body>

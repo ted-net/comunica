@@ -26,55 +26,53 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Configuração do WebSocket
         const socketUrl = window.location.origin.replace(/^http/, 'ws'); 
         const socket = new WebSocket(socketUrl);
 
+        // Quando a conexão WebSocket é estabelecida
         socket.onopen = function() {
-            console.log('Conectado ao servidor WebSocket no Filho');
+            console.log('Conectado ao servidor WebSocket no Filho 6');
         };
 
+        // Quando uma mensagem é recebida do servidor
         socket.onmessage = function(event) {
-            console.log('Mensagem recebida:', event.data);  // Log da mensagem recebida
+            console.log('Mensagem recebida:', event.data);  
 
-            if (event.data instanceof Blob) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    const dadosRecebidos = JSON.parse(reader.result);
-                    if (dadosRecebidos.destinatario === 'filhos') {
-                        exibirUltimaMensagem(`Mensagem do Pai: ${dadosRecebidos.texto}`);
-                    }
-                };
-                reader.readAsText(event.data);
-            } else {
+            try {
                 const dadosRecebidos = JSON.parse(event.data);
-                if (dadosRecebidos.destinatario === 'filhos') {
+
+                // Verifica se a mensagem é destinada a todos os filhos ou apenas a este filho
+                if (dadosRecebidos.destinatario === 'filhos' || 
+                    dadosRecebidos.destinatario === 'filho6') { // Verifica se é para este filho especificamente
                     exibirUltimaMensagem(`Mensagem do Pai: ${dadosRecebidos.texto}`);
                 }
+            } catch (e) {
+                console.error('Erro ao processar mensagem:', e);
             }
         };
 
+        // Função para exibir a última mensagem recebida
         function exibirUltimaMensagem(mensagem) {
             const ultimaMensagem = document.getElementById('ultimaMensagem');
             ultimaMensagem.textContent = mensagem;
         }
 
-        // Enviar mensagem
+        // Função para enviar mensagem para o Pai
         function enviarMensagem() {
             const mensagem = document.getElementById('mensagemInput').value;
             const dadosMensagem = {
-                identificador: 'filho6',
+                identificador: 'filho6', // Identificador deste filho
                 texto: mensagem,
                 destinatario: 'pai'
             };
             socket.send(JSON.stringify(dadosMensagem));
             console.log('Mensagem enviada para o Pai 6:', dadosMensagem.texto);
-
-            // Limpa o campo de mensagem após enviar
-            document.getElementById('mensagemInput').value = '';
+            document.getElementById('mensagemInput').value = ''; // Limpa o campo de mensagem
         }
 
-            // Enviar mensagem com Enter
-            document.getElementById('mensagemInput').addEventListener('keypress', function (e) {
+        // Envia a mensagem quando a tecla Enter é pressionada
+        document.getElementById('mensagemInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 enviarMensagem();
             }
