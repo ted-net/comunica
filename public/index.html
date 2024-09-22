@@ -1,98 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pai</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pai</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .box-mensagem {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      min-height: 80px; /* Altura mínima para os boxes */
+    }
+  </style>
 </head>
 <body>
-    <div class="container custom-container">
-        <div class="row">
-            <div class="col-12">
-                <h1>Pai</h1>
-                <div>
-                    <input type="text" id="mensagemInput" placeholder="Escreva sua mensagem">
-                    <button onclick="enviarMensagem()">Enviar para os Filhos</button>
-                </div>
-                
-                <h2>Mensagens Recebidas</h2>
-
-                <div class="quadros">
-                    <div>
-                        <h3 class="titMsg">Mensagens do Filho 1</h3>
-                        <div id="mensagensFilho1"></div>
-                    </div>
-                </div>
-    
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1>Pai</h1>
+        
+        <h2>Mensagens dos Filhos:</h2>
+        <div class="row"> 
+          <!-- Boxes para cada filho -->
+          <div class="col-md-4">
+            <h3>Filho 1</h3>
+            <div id="box-filho1" class="box-mensagem">
+              <p id="ultimaMensagem-filho1"></p> </div>
+          </div>
+          <div class="col-md-4">
+            <h3>Filho 2</h3>
+            <div id="box-filho2" class="box-mensagem">
+              <p id="ultimaMensagem-filho2"></p>
             </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 3</h3>
+            <div id="box-filho3" class="box-mensagem">
+              <p id="ultimaMensagem-filho3"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 4</h3>
+            <div id="box-filho4" class="box-mensagem">
+              <p id="ultimaMensagem-filho4"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 5</h3>
+            <div id="box-filho5" class="box-mensagem">
+              <p id="ultimaMensagem-filho5"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 6</h3>
+            <div id="box-filho6" class="box-mensagem">
+              <p id="ultimaMensagem-filho6"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 7</h3>
+            <div id="box-filho7" class="box-mensagem">
+              <p id="ultimaMensagem-filho7"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 8</h3>
+            <div id="box-filho8" class="box-mensagem">
+              <p id="ultimaMensagem-filho8"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 9</h3>
+            <div id="box-filho9" class="box-mensagem">
+              <p id="ultimaMensagem-filho9"></p>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h3>Filho 10</h3>
+            <div id="box-filho10" class="box-mensagem">
+              <p id="ultimaMensagem-filho10"></p>
+            </div>
+          </div>
+          <!-- FIM dos filhos (1 a 10) --> 
         </div>
+      </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        //const socketUrl = 'ws://localhost:8080';  // URL do WebSocket configurada manualmente
-        //const socketUrl = 'wss://comunica.onrender.com';
-        const socketUrl = window.location.origin.replace(/^http/, 'ws'); // Ajusta para ws:// ou wss://
-        const socket = new WebSocket(socketUrl);
+  </div>
 
-        socket.onopen = function() {
-            console.log('Conectado ao servidor WebSocket no Pai');
-        };
+  <script>
+    const socketUrl = window.location.origin.replace(/^http/, 'ws'); 
+    const socket = new WebSocket(socketUrl);
 
-        // Receber mensagem dos Filhos
-        socket.onmessage = function(event) {
-            console.log('Mensagem recebida:', event.data);  // Log da mensagem recebida
+    socket.onopen = function() {
+      console.log('Conectado ao servidor WebSocket no Pai');
+    };
 
-            if (event.data instanceof Blob) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    processarMensagem(JSON.parse(reader.result));
-                };
-                reader.readAsText(event.data);
-            } else {
-                processarMensagem(JSON.parse(event.data));
-            }
-        };
+    socket.onmessage = function(event) {
+      console.log('Mensagem recebida:', event.data); 
 
-        function processarMensagem(dadosRecebidos) {
-            if (dadosRecebidos.destinatario === 'pai') {
-                const identificadorFilho = dadosRecebidos.identificador;
-                const textoMensagem = dadosRecebidos.texto;
-
-                let divFilho = document.getElementById('mensagensFilho1');
-                if (divFilho) {
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho.appendChild(novaMensagem);
-                }
-
-                console.log(`Mensagem recebida do ${identificadorFilho}: ${textoMensagem}`);
-            }
+      try {
+        const dadosRecebidos = JSON.parse(event.data);
+        
+        if (dadosRecebidos.destinatario === 'pai') {
+          const idBox = `box-filho${dadosRecebidos.identificador.slice(-1)}`; // Extrai o número do filho
+          const idMensagem = `ultimaMensagem-${idBox}`;
+          const boxMensagem = document.getElementById(idBox);
+          const ultimaMensagem = document.getElementById(idMensagem);
+          ultimaMensagem.textContent = `Filho ${dadosRecebidos.identificador.slice(-1)}: ${dadosRecebidos.texto}`;
+          boxMensagem.scrollTop = boxMensagem.scrollHeight; // Rola para baixo automaticamente
         }
+      } catch (e) {
+        console.error('Erro ao processar mensagem:', e);
+      }
+    };
 
-        // Enviar mensagem
-        function enviarMensagem() {
-            const mensagem = document.getElementById('mensagemInput').value;
-            const dadosMensagem = {
-                identificador: 'pai',
-                texto: mensagem,
-                destinatario: 'filhos'
-            };
-            socket.send(JSON.stringify(dadosMensagem));
-            console.log('Mensagem enviada para os filhos:', dadosMensagem.texto);
-
-            // Limpa o campo de mensagem após enviar
-            document.getElementById('mensagemInput').value = '';
-        }
-
-        // Enviar mensagem com Enter
-        document.getElementById('mensagemInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                enviarMensagem();
-            }
-        });
-    </script>
+  </script>
 </body>
 </html>
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filho 1</title>
+    <title>Filho 5</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,7 +11,7 @@
     <div class="container custom-container">
         <div class="row">
             <div class="col-12">
-                <h1>Filho 1</h1>
+                <h1>Filho 5</h1>
 
                 <input type="text" id="mensagemInput" placeholder="Digite sua mensagem para o pai">
                 <button onclick="enviarMensagem()">Enviar</button>
@@ -62,12 +62,12 @@
         function enviarMensagem() {
             const mensagem = document.getElementById('mensagemInput').value;
             const dadosMensagem = {
-                identificador: 'filho1',
+                identificador: 'filho5',
                 texto: mensagem,
                 destinatario: 'pai'
             };
             socket.send(JSON.stringify(dadosMensagem));
-            console.log('Mensagem enviada para o Pai 1:', dadosMensagem.texto);
+            console.log('Mensagem enviada para o Pai 5:', dadosMensagem.texto);
 
             // Limpa o campo de mensagem após enviar
             document.getElementById('mensagemInput').value = '';
