@@ -26,7 +26,10 @@
     </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const socket = new WebSocket('ws://localhost:8080');
+    const socketUrl = location.protocol === 'https:' ? 'wss://' + location.host : 'ws://' + location.host;
+    const socket = new WebSocket(socketUrl);
+    
+    // const socket = new WebSocket('ws://localhost:8080');
 
     socket.onopen = function() {
         console.log('Conectado ao servidor WebSocket no Filho');
