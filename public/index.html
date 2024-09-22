@@ -73,17 +73,36 @@
         };
 
         function processarMensagem(dadosRecebidos) {
+            // Verifica se o destinatário é o Pai
             if (dadosRecebidos.destinatario === 'pai') {
-                const { identificador, texto } = dadosRecebidos;
-                const divFilho = document.getElementById(`mensagens${identificador.charAt(0).toUpperCase() + identificador.slice(1)}`);
-                if (divFilho) {
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = texto;
-                    divFilho.appendChild(novaMensagem);
+                const identificadorFilho = dadosRecebidos.identificador;  // 'filho1', 'filho2', etc.
+                const textoMensagem = dadosRecebidos.texto;
+
+                // Verifica qual filho enviou a mensagem e coloca na div correspondente
+                let divFilho;
+                if (identificadorFilho === 'filho1') {
+                    divFilho = document.getElementById('mensagensFilho1');
+                } else if (identificadorFilho === 'filho2') {
+                    divFilho = document.getElementById('mensagensFilho2');
+                } else if (identificadorFilho === 'filho3') {
+                    divFilho = document.getElementById('mensagensFilho3');
+                } else if (identificadorFilho === 'filho4') {
+                    divFilho = document.getElementById('mensagensFilho4');
                 }
-                console.log(`Mensagem recebida do ${identificador}: ${texto}`);
+
+                if (divFilho) {
+                    // Cria um novo parágrafo para exibir a mensagem
+                    const novaMensagem = document.createElement('p');
+                    novaMensagem.textContent = textoMensagem;
+                    divFilho.appendChild(novaMensagem);  // Adiciona a mensagem na div
+                } else {
+                    console.log(`Div para o filho ${identificadorFilho} não encontrada!`);
+                }
+
+                console.log(`Mensagem recebida do ${identificadorFilho}: ${textoMensagem}`);
             }
         }
+
 
         // Enviar mensagem com Enter
         document.getElementById('mensagemInput').addEventListener('keypress', function (e) {
