@@ -79,6 +79,7 @@
     function enviarMensagem() {
         const mensagem = document.getElementById('mensagemInput').value;
         const dadosMensagem = {
+            tipo: 'filho',  // Adicione isso
             identificador: 'filho1', // ou 'filho2' para o segundo filho
             texto: mensagem,
             destinatario: 'pai'
