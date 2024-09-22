@@ -19,9 +19,10 @@
     <div class="row">
       <div class="col-12">
         <h1>Pai</h1>
-        
+
         <h2>Mensagens dos Filhos:</h2>
-        <div class="row"> 
+        <div class="row" id="boxes-filhos">
+          <!-- Os boxes dos filhos serão adicionados aqui dinamicamente -->
         </div>
 
         <h2>Enviar Mensagem para os Filhos:</h2>
@@ -29,102 +30,69 @@
           <input type="text" id="mensagemInput" class="form-control" placeholder="Digite sua mensagem para os filhos">
           <button class="btn btn-primary" type="button" onclick="enviarMensagem()">Enviar</button>
         </div>
-     
-          <!-- Boxes para cada filho -->
-          <div class="col-md-4">
-            <h3>Filho 1</h3>
-            <div id="box-filho1" class="box-mensagem">
-              <p id="ultimaMensagem-filho1"></p> </div>
-          </div>
-          <div class="col-md-4">
-            <h3>Filho 2</h3>
-            <div id="box-filho2" class="box-mensagem">
-              <p id="ultimaMensagem-filho2"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 3</h3>
-            <div id="box-filho3" class="box-mensagem">
-              <p id="ultimaMensagem-filho3"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 4</h3>
-            <div id="box-filho4" class="box-mensagem">
-              <p id="ultimaMensagem-filho4"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 5</h3>
-            <div id="box-filho5" class="box-mensagem">
-              <p id="ultimaMensagem-filho5"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 6</h3>
-            <div id="box-filho6" class="box-mensagem">
-              <p id="ultimaMensagem-filho6"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 7</h3>
-            <div id="box-filho7" class="box-mensagem">
-              <p id="ultimaMensagem-filho7"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 8</h3>
-            <div id="box-filho8" class="box-mensagem">
-              <p id="ultimaMensagem-filho8"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 9</h3>
-            <div id="box-filho9" class="box-mensagem">
-              <p id="ultimaMensagem-filho9"></p>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-            <h3>Filho 10</h3>
-            <div id="box-filho10" class="box-mensagem">
-              <p id="ultimaMensagem-filho10"></p>
-            </div>
-          </div>
-          <!-- FIM dos filhos (1 a 10) --> 
-        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const socketUrl = window.location.origin.replace(/^http/, 'ws'); 
+    const socketUrl = window.location.origin.replace(/^http/, 'ws');
     const socket = new WebSocket(socketUrl);
 
+    // Função para criar o box de um filho (se ainda não existir)
+    function criarBoxFilho(numeroFilho) {
+      const boxesFilhos = document.getElementById('boxes-filhos');
+      const idBox = `box-filho${numeroFilho}`;
+
+      if (!document.getElementById(idBox)) {
+        const divCol = document.createElement('div');
+        divCol.classList.add('col-md-4');
+
+        const divBox = document.createElement('div');
+        divBox.id = idBox;
+        divBox.classList.add('box-mensagem');
+
+        const h3 = document.createElement('h3');
+        h3.textContent = `Filho ${numeroFilho}`;
+
+        const p = document.createElement('p');
+        p.id = `ultimaMensagem-${idBox}`;
+
+        divBox.appendChild(h3);
+        divBox.appendChild(p);
+        divCol.appendChild(divBox);
+        boxesFilhos.appendChild(divCol);
+      }
+    }
+
+    // Quando a conexão WebSocket é aberta:
     socket.onopen = function() {
       console.log('Conectado ao servidor WebSocket no Pai');
+
+      // Cria os boxes para os 10 filhos ao conectar
+      for (let i = 1; i <= 10; i++) {
+        criarBoxFilho(i);
+      }
     };
 
     socket.onmessage = function(event) {
-      console.log('Mensagem recebida:', event.data); 
+      console.log('Mensagem recebida:', event.data);
 
       try {
         const dadosRecebidos = JSON.parse(event.data);
-        
+
         if (dadosRecebidos.destinatario === 'pai') {
-          const idBox = `box-filho${dadosRecebidos.identificador.slice(-1)}`; // Extrai o número do filho
+          const numeroFilho = dadosRecebidos.identificador.slice(-1);
+          const idBox = `box-filho${numeroFilho}`;
           const idMensagem = `ultimaMensagem-${idBox}`;
+
+          // Cria o box do filho se ele ainda não existir
+          criarBoxFilho(numeroFilho);
+
           const boxMensagem = document.getElementById(idBox);
           const ultimaMensagem = document.getElementById(idMensagem);
-          ultimaMensagem.textContent = `Filho ${dadosRecebidos.identificador.slice(-1)}: ${dadosRecebidos.texto}`;
-          boxMensagem.scrollTop = boxMensagem.scrollHeight; // Rola para baixo automaticamente
+
+          ultimaMensagem.textContent = `Filho ${numeroFilho}: ${dadosRecebidos.texto}`;
+          boxMensagem.scrollTop = boxMensagem.scrollHeight;
         }
       } catch (e) {
         console.error('Erro ao processar mensagem:', e);
@@ -134,15 +102,14 @@
     function enviarMensagem() {
       const mensagem = document.getElementById('mensagemInput').value;
       const dadosMensagem = {
-        identificador: 'Pai', // Identificador do Pai
+        identificador: 'Pai',
         texto: mensagem,
-        destinatario: 'filhos' // Destinado a todos os filhos
+        destinatario: 'filhos' 
       };
       socket.send(JSON.stringify(dadosMensagem));
       console.log('Mensagem enviada para os Filhos:', dadosMensagem.texto);
-      document.getElementById('mensagemInput').value = ''; // Limpa o campo de mensagem
+      document.getElementById('mensagemInput').value = ''; 
     }
-
   </script>
 </body>
 </html>
