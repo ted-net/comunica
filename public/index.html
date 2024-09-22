@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pai</title>
-    <!-- <meta name="description" content="Survey" /> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -21,28 +19,10 @@
                 
                 <h2>Mensagens Recebidas</h2>
 
-                <!-- Div para cada filho -->
                 <div class="quadros">
                     <div>
                         <h3 class="titMsg">Mensagens do Filho 1</h3>
-                        <div id="mensagensFilho1"></div><!-- Mensagens do Filho 1 aparecerão aqui -->
-                    </div>
-
-                    <div>
-                        <h3 class="titMsg">Mensagens do Filho 2</h3>
-                        <div id="mensagensFilho2"></div> <!-- Mensagens do Filho 2 aparecerão aqui -->
-                    </div>
-                </div>
-
-                <div class="quadros">
-                    <div>
-                        <h3 class="titMsg">Mensagens do Filho 3</h3>
-                        <div id="mensagensFilho3"></div> <!-- Mensagens do Filho 3 aparecerão aqui -->
-                    </div>
-
-                    <div>
-                        <h3 class="titMsg">Mensagens do Filho 4</h3>
-                        <div id="mensagensFilho4"></div><!-- Mensagens do Filho 4 aparecerão aqui -->
+                        <div id="mensagensFilho1"></div>
                     </div>
                 </div>
     
@@ -51,16 +31,17 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const socketUrl = location.protocol === 'https:' ? 'wss://' + location.host : 'ws://' + location.host;
+        const socketUrl = 'ws://localhost:8080';  // URL do WebSocket configurada manualmente
         const socket = new WebSocket(socketUrl);
-        
-        // const socket = new WebSocket('ws://localhost:8080');
 
         socket.onopen = function() {
             console.log('Conectado ao servidor WebSocket no Pai');
         };
-        //Receber mensagem dos Filhos
+
+        // Receber mensagem dos Filhos
         socket.onmessage = function(event) {
+            console.log('Mensagem recebida:', event.data);  // Log da mensagem recebida
+
             if (event.data instanceof Blob) {
                 const reader = new FileReader();
                 reader.onload = function() {
@@ -73,58 +54,43 @@
         };
 
         function processarMensagem(dadosRecebidos) {
-            // Verifica se o destinatário é o Pai
             if (dadosRecebidos.destinatario === 'pai') {
-                const identificadorFilho = dadosRecebidos.identificador;  // 'filho1', 'filho2', etc.
+                const identificadorFilho = dadosRecebidos.identificador;
                 const textoMensagem = dadosRecebidos.texto;
 
-                // Verifica qual filho enviou a mensagem e coloca na div correspondente
-                let divFilho;
-                if (identificadorFilho === 'filho1') {
-                    divFilho = document.getElementById('mensagensFilho1');
-                } else if (identificadorFilho === 'filho2') {
-                    divFilho = document.getElementById('mensagensFilho2');
-                } else if (identificadorFilho === 'filho3') {
-                    divFilho = document.getElementById('mensagensFilho3');
-                } else if (identificadorFilho === 'filho4') {
-                    divFilho = document.getElementById('mensagensFilho4');
-                }
-
+                let divFilho = document.getElementById('mensagensFilho1');
                 if (divFilho) {
-                    // Cria um novo parágrafo para exibir a mensagem
                     const novaMensagem = document.createElement('p');
                     novaMensagem.textContent = textoMensagem;
-                    divFilho.appendChild(novaMensagem);  // Adiciona a mensagem na div
-                } else {
-                    console.log(`Div para o filho ${identificadorFilho} não encontrada!`);
+                    divFilho.appendChild(novaMensagem);
                 }
 
                 console.log(`Mensagem recebida do ${identificadorFilho}: ${textoMensagem}`);
             }
         }
 
+        // Enviar mensagem
+        function enviarMensagem() {
+            const mensagem = document.getElementById('mensagemInput').value;
+            const dadosMensagem = {
+                identificador: 'pai',
+                texto: mensagem,
+                destinatario: 'filhos'
+            };
+            socket.send(JSON.stringify(dadosMensagem));
+            console.log('Mensagem enviada para os filhos:', dadosMensagem.texto);
+
+            // Limpa o campo de mensagem após enviar
+            document.getElementById('mensagemInput').value = '';
+        }
 
         // Enviar mensagem com Enter
         document.getElementById('mensagemInput').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    enviarMensagem();
-                }
-            });
-
-        // Enviar mensagem
-            function enviarMensagem() {
-                const mensagem = document.getElementById('mensagemInput').value;
-                const dadosMensagem = {
-                    identificador: 'pai',
-                    texto: mensagem,
-                    destinatario: 'filhos'
-                };
-                socket.send(JSON.stringify(dadosMensagem));
-                console.log('Mensagem enviada para os filhos:', dadosMensagem.texto);
-
-                // Limpa o campo de mensagem após enviar msg
-                document.getElementById('mensagemInput').value = '';
+            if (e.key === 'Enter') {
+                enviarMensagem();
             }
+        });
     </script>
 </body>
 </html>
+
