@@ -72,50 +72,16 @@
             }
         };
 
-
         function processarMensagem(dadosRecebidos) {
             if (dadosRecebidos.destinatario === 'pai') {
-                const identificadorFilho = dadosRecebidos.identificador;  // 'filho1', 'filho2', etc.
-                const textoMensagem = dadosRecebidos.texto;
-
-                // Verifica qual filho enviou a mensagem e coloca na div correspondente
-                if (identificadorFilho === 'filho1') {
-                    const divFilho1 = document.getElementById('mensagensFilho1');
+                const { identificador, texto } = dadosRecebidos;
+                const divFilho = document.getElementById(`mensagens${identificador.charAt(0).toUpperCase() + identificador.slice(1)}`);
+                if (divFilho) {
                     const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho1.appendChild(novaMensagem);
-                } else if (identificadorFilho === 'filho2') {
-                    const divFilho2 = document.getElementById('mensagensFilho2');
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho2.appendChild(novaMensagem);
-                } else if (identificadorFilho === 'filho3') {
-                    const divFilho3 = document.getElementById('mensagensFilho3');
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho3.appendChild(novaMensagem);
-                } else if (identificadorFilho === 'filho3') {
-                    const divFilho3 = document.getElementById('mensagensFilho3');
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho3.appendChild(novaMensagem);
-                } else if (identificadorFilho === 'filho3') {
-                    const divFilho3 = document.getElementById('mensagensFilho3');
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho3.appendChild(novaMensagem);
-                } else if (identificadorFilho === 'filho3') {
-                    const divFilho3 = document.getElementById('mensagensFilho3');
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho3.appendChild(novaMensagem);
-                } else if (identificadorFilho === 'filho4') {
-                    const divFilho4 = document.getElementById('mensagensFilho4');
-                    const novaMensagem = document.createElement('p');
-                    novaMensagem.textContent = textoMensagem;
-                    divFilho4.appendChild(novaMensagem);
+                    novaMensagem.textContent = texto;
+                    divFilho.appendChild(novaMensagem);
                 }
-                console.log(`Mensagem recebida do ${identificadorFilho}: ${textoMensagem}`);
+                console.log(`Mensagem recebida do ${identificador}: ${texto}`);
             }
         }
 
